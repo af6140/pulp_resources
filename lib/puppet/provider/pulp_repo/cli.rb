@@ -115,12 +115,12 @@ Puppet::Type.type(:pulp_repo).provide(:cli) do
   def create
     Puppet.debug("Invoking create command #{self.resource.to_s}")
     self.class.login_get_cert
-    cmd = repo_delete_cmd
+    cmd = repo_create_cmd
     Puppet.debug("create with cmd: #{cmd.join(' ')}")
     execute(cmd)
     @property_hash[:ensure] = :present
   rescue Puppet::ExecutionFailure => details
-    raise Puppet::Error, "Cannot create repo : #{repo_create_cmd.join(' ')}, details: #details"
+    raise Puppet::Error, "Cannot create repo : #{repo_create_cmd.join(' ')}, details: #{details}"
   end
 
   def destroy
@@ -218,7 +218,7 @@ Puppet::Type.type(:pulp_repo).provide(:cli) do
       output = execute(login_cmd)
     end
   rescue Puppet::ExecutionFailure => details
-    raise Puppet::Error, "Check ~/.pulp/admin.conf for credentials, could not log in with pulpadmin: #{detail}"
+    raise Puppet::Error, "Check ~/.pulp/admin.conf for credentials, could not log in with pulpadmin: #{details}"
   end
 
   def self.get_auth_credetials
